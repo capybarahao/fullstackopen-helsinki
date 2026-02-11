@@ -12,6 +12,7 @@ const App = () => {
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
+  const all = good + neutral + bad
 
   const setToGood = newValue => {
     console.log('value good now', newValue)
@@ -38,6 +39,9 @@ const App = () => {
       <div>good {good}</div>
       <div>neutral {neutral}</div>
       <div>bad {bad}</div>
+      <div>all {all}</div>
+      <div>average {(good * 1 + bad * (-1)) / all}</div>
+      <div>positive: {all === 0 ? 0 : ((good / all) * 100).toFixed(1)}%</div>
     </div>
   )
 }
