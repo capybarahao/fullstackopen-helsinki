@@ -11,6 +11,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("");
   const [searchName, setSearchName] = useState("");
 
+  // set persons array from server data before everything else
   useEffect(() => {
     personsService.getAll().then((initialPersons) => {
       setPersons(initialPersons);
@@ -19,30 +20,49 @@ const App = () => {
 
   console.log("render", persons.length, "persons/people");
 
-  const addNewPerson = (event) => {
+  const addOrUpdatePerson = (event) => {
     event.preventDefault();
 
-    // check if name already exist
-    const nameAlreadyExists = persons.some(
-      (person) => person.name.toLowerCase() === newName.toLowerCase(),
+    // check do add or do update
+    const existingPerson = persons.find(
+      (p) => p.name.toLowerCase() === newName.toLowerCase(),
     );
 
-    if (nameAlreadyExists) {
-      alert(`"${newName}" is already added to phonebook`);
+    // ADD
+    if (!existingPerson) {
+      const personObject = {
+        name: newName,
+        number: newNumber,
+        id: Math.floor(Math.random() * 10_000_000_000),
+      };
+
+      personsService.create(personObject).then((returnedPerson) => {
+        setPersons(persons.concat(returnedPerson));
+        setNewName("");
+        setNewNumber("");
+      });
       return;
+    } else {
+      // UPDATE, window confirm
+      if (
+        window.confirm(
+          `${newName} is already in the phonebook. Replace the old number with a new one?`,
+        )
+      ) {
+        // create an updated person object
+        const updatedPerson = { ...existingPerson, number: newNumber };
+
+        personsService
+          .update(existingPerson.id, updatedPerson)
+          .then((returnedP) => {
+            setPersons(
+              persons.map((p) => (p.id === returnedP.id ? returnedP : p)), // replace
+            );
+            setNewName("");
+            setNewNumber("");
+          });
+      }
     }
-
-    const personObject = {
-      name: newName,
-      number: newNumber,
-      id: String(persons.length + 1),
-    };
-
-    personsService.create(personObject).then((returnedPerson) => {
-      setPersons(persons.concat(returnedPerson));
-      setNewName("");
-      setNewNumber("");
-    });
   };
 
   const deletePersonByID = (event, id) => {
@@ -51,13 +71,13 @@ const App = () => {
 
     if (window.confirm(`delete "${personToDelete?.name}"?`)) {
       personsService
-        .deletePerson(id)
+        .remove(id)
         .then(() => {
           setPersons(persons.filter((p) => p.id !== personToDelete.id));
         })
         .catch((error) => {
           alert(
-            `the person '${returnedPerson.name}' was already deleted from server`,
+            `the person '${personToDelete.name}' was already deleted from server`,
           );
           setPersons(persons.filter((n) => n.id !== id));
         });
@@ -94,7 +114,7 @@ const App = () => {
 
       <h3>Add a new</h3>
       <PersonForm
-        onSubmit={addNewPerson}
+        onSubmit={addOrUpdatePerson}
         onNameChange={handleNameChange}
         onNumberChange={handleNumberChange}
         newName={newName}
