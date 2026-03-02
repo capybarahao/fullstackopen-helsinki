@@ -17,7 +17,7 @@ const Filter = ({ onChange, persons, searchName }) => {
         {searchName.trim() && (
           <ul>
             {personsToShow.map((person) => (
-              <Person key={person.name} person={person} />
+              <Person key={person.id} person={person} />
             ))}
           </ul>
         )}

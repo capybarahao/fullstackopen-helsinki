@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import personsService from "./services/persons";
 import Person from "./components/Person";
 import PersonForm from "./components/PersonForm";
 import Filter from "./components/Filter";
@@ -11,12 +12,11 @@ const App = () => {
   const [searchName, setSearchName] = useState("");
 
   useEffect(() => {
-    console.log("effect");
-    axios.get(" http://localhost:3001/persons").then((response) => {
-      console.log("promise fulfilled!");
-      setPersons(response.data);
+    personsService.getAll().then((initialPersons) => {
+      setPersons(initialPersons);
     });
   }, []);
+
   console.log("render", persons.length, "persons/people");
 
   const addNewPerson = (event) => {
@@ -38,9 +38,30 @@ const App = () => {
       id: String(persons.length + 1),
     };
 
-    setPersons(persons.concat(personObject));
-    setNewName("");
-    setNewNumber("");
+    personsService.create(personObject).then((returnedPerson) => {
+      setPersons(persons.concat(returnedPerson));
+      setNewName("");
+      setNewNumber("");
+    });
+  };
+
+  const deletePersonByID = (event, id) => {
+    event.preventDefault();
+    const personToDelete = persons.find((p) => p.id === id);
+
+    if (window.confirm(`delete "${personToDelete?.name}"?`)) {
+      personsService
+        .deletePerson(id)
+        .then(() => {
+          setPersons(persons.filter((p) => p.id !== personToDelete.id));
+        })
+        .catch((error) => {
+          alert(
+            `the person '${returnedPerson.name}' was already deleted from server`,
+          );
+          setPersons(persons.filter((n) => n.id !== id));
+        });
+    }
   };
 
   const handleNameChange = (event) => {
@@ -83,7 +104,11 @@ const App = () => {
       <h2>Numbers</h2>
       <ul>
         {persons.map((person) => (
-          <Person key={person.name} person={person} />
+          <Person
+            key={person.id}
+            onDelete={() => deletePersonByID(event, person.id)}
+            person={person}
+          />
         ))}
       </ul>
     </div>
