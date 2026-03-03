@@ -4,12 +4,15 @@ import personsService from "./services/persons";
 import Person from "./components/Person";
 import PersonForm from "./components/PersonForm";
 import Filter from "./components/Filter";
+import Notification from "./components/Notification";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [searchName, setSearchName] = useState("");
+  const [errMessage, setErrMessage] = useState("");
+  const [scsMessage, setScsMessage] = useState("");
 
   // set persons array from server data before everything else
   useEffect(() => {
@@ -36,10 +39,15 @@ const App = () => {
         id: Math.floor(Math.random() * 10_000_000_000),
       };
 
-      personsService.create(personObject).then((returnedPerson) => {
-        setPersons(persons.concat(returnedPerson));
+      personsService.create(personObject).then((returnedP) => {
+        setPersons(persons.concat(returnedP));
         setNewName("");
         setNewNumber("");
+        // success message
+        setScsMessage(`Added '${returnedP.name}'`);
+        setTimeout(() => {
+          setScsMessage(null);
+        }, 5000);
       });
       return;
     } else {
@@ -50,14 +58,25 @@ const App = () => {
         )
       ) {
         // create an updated person object
-        const updatedPerson = { ...existingPerson, number: newNumber };
+        const updatedP = { ...existingPerson, number: newNumber };
 
         personsService
-          .update(existingPerson.id, updatedPerson)
+          .update(existingPerson.id, updatedP)
           .then((returnedP) => {
             setPersons(
               persons.map((p) => (p.id === returnedP.id ? returnedP : p)), // replace
             );
+            setNewName("");
+            setNewNumber("");
+          })
+          .catch((error) => {
+            setErrMessage(
+              `Info of '${updatedP.name}' has already been removed from server`,
+            );
+            setTimeout(() => {
+              setErrMessage(null);
+            }, 5000);
+            setPersons(persons.filter((n) => n.id !== updatedP.id));
             setNewName("");
             setNewNumber("");
           });
@@ -77,7 +96,7 @@ const App = () => {
         })
         .catch((error) => {
           alert(
-            `the person '${personToDelete.name}' was already deleted from server`,
+            `Not found: the person '${personToDelete.name}' was already deleted from server`,
           );
           setPersons(persons.filter((n) => n.id !== id));
         });
@@ -101,9 +120,6 @@ const App = () => {
 
   return (
     <div>
-      <div>
-        debug: {newName} {newNumber}
-      </div>
       <h2>Phonebook</h2>
 
       <Filter
@@ -120,6 +136,9 @@ const App = () => {
         newName={newName}
         newNumber={newNumber}
       />
+      <div>
+        <Notification errMsg={errMessage} scsMsg={scsMessage} />
+      </div>
 
       <h2>Numbers</h2>
       <ul>
