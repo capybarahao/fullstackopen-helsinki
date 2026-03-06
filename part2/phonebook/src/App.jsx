@@ -6,6 +6,11 @@ import PersonForm from "./components/PersonForm";
 import Filter from "./components/Filter";
 import Notification from "./components/Notification";
 
+// ----------------------------------
+// npm run server
+// npm run dev
+// ----------------------------------
+
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
@@ -14,7 +19,8 @@ const App = () => {
   const [errMessage, setErrMessage] = useState("");
   const [scsMessage, setScsMessage] = useState("");
 
-  // set persons array from server data before everything else
+  // get data from server
+  // the effect is only run after the first render of the component
   useEffect(() => {
     personsService.getAll().then((initialPersons) => {
       setPersons(initialPersons);
