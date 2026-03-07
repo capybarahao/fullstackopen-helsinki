@@ -10,6 +10,7 @@ const cors = require("cors");
 // Middleware is used like this:
 app.use(cors());
 app.use(express.json());
+app.use(express.static("dist"));
 
 // morgan custom formats!!
 morgan.token("obj", (req) => {

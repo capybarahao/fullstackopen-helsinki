@@ -1,0 +1,10 @@
+GET  https://fullstackopen-helsinki-mrtw.onrender.com/api/persons
+
+###
+POST  https://fullstackopen-helsinki-mrtw.onrender.com/api/persons HTTP/1.1
+content-type: application/json
+
+{
+    "name": "samp2adf",
+    "number": "1232141"
+}
