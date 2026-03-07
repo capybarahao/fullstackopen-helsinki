@@ -1,7 +1,23 @@
 const express = require("express");
+const morgan = require("morgan");
 const app = express();
 
+//allow for requests from all origins
+const cors = require("cors");
+
+//Middleware are functions that can be used for
+// handling request and response objects
+// Middleware is used like this:
+app.use(cors());
 app.use(express.json());
+
+// morgan custom formats!!
+morgan.token("obj", (req) => {
+  return JSON.stringify(req.body);
+});
+app.use(
+  morgan(":method :url :status :res[content-length] - :response-time ms :obj"),
+);
 
 let persons = [
   {
@@ -95,7 +111,7 @@ app.post("/api/persons", (request, response) => {
   response.json(person);
 });
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
