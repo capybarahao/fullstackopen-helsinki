@@ -5,7 +5,7 @@ const app = express();
 //allow for requests from all origins
 const cors = require("cors");
 
-//Middleware are functions that can be used for
+// Middleware are functions that can be used for
 // handling request and response objects
 // Middleware is used like this:
 app.use(cors());
