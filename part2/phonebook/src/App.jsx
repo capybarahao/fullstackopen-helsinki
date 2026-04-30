@@ -9,6 +9,7 @@ import Notification from "./components/Notification";
 // ----------------------------------
 // npm run server
 // npm run dev
+// npm run build // build frontend production /dist and copy to backend root
 // ----------------------------------
 
 const App = () => {
@@ -42,7 +43,7 @@ const App = () => {
       const personObject = {
         name: newName,
         number: newNumber,
-        id: Math.floor(Math.random() * 10_000_000_000),
+        // id is generated in backend
       };
 
       personsService.create(personObject).then((returnedP) => {
