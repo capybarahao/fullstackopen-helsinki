@@ -93,6 +93,21 @@ app.post("/api/persons", async (request, response) => {
   response.json(result.rows[0]);
 });
 
+app.put("/api/persons/:id", async (request, response) => {
+  const { name, number } = request.body;
+  const id = request.params.id;
+  console.log("start finding person");
+  const result = await pool.query(
+    "UPDATE persons SET name = $1, number = $2 WHERE id = $3 RETURNING *",
+    [name, number, id],
+  );
+  if (result.rows.length > 0) {
+    response.json(result.rows[0]);
+  } else {
+    response.status(404).json({ error: "person not found" });
+  }
+});
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
