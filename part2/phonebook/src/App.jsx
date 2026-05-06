@@ -33,6 +33,12 @@ const App = () => {
   const addOrUpdatePerson = (event) => {
     event.preventDefault();
 
+    // name length validation
+    if (newName.trim().length < 3) {
+      setErrMessage("Name must be at least 3 characters long");
+      setTimeout(() => setErrMessage(null), 5000);
+      return;
+    }
     // check do add or do update
     const existingPerson = persons.find(
       (p) => p.name.toLowerCase() === newName.toLowerCase(),
