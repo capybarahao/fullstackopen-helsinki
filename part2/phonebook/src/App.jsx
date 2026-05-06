@@ -77,13 +77,19 @@ const App = () => {
             setNewNumber("");
           })
           .catch((error) => {
-            setErrMessage(
-              `Info of '${updatedP.name}' has already been removed from server`,
-            );
-            setTimeout(() => {
-              setErrMessage(null);
-            }, 5000);
-            setPersons(persons.filter((n) => n.id !== updatedP.id));
+            if (error.response?.status === 404) {
+              // Person was deleted by someone else
+              setErrMessage(
+                `Info of '${updatedP.name}' has already been removed from server`,
+              );
+              setPersons(persons.filter((n) => n.id !== updatedP.id));
+            } else {
+              // Some other error (validation, network, server)
+              setErrMessage(
+                `Failed to update '${updatedP.name}': ${error.response?.data?.error || "unknown error"}`,
+              );
+            }
+            setTimeout(() => setErrMessage(null), 5000);
             setNewName("");
             setNewNumber("");
           });

@@ -1,4 +1,6 @@
 GET  https://fullstackopen-helsinki-mrtw.onrender.com/api/persons
+###
+GET  https://fullstackopen-helsinki-mrtw.onrender.com/api/persons/4
 
 ###
 POST  https://fullstackopen-helsinki-mrtw.onrender.com/api/persons HTTP/1.1
