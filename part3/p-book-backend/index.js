@@ -155,6 +155,10 @@ const errorHandler = (error, request, response, next) => {
   if (error.code === "08006") {
     return response.status(503).json({ error: "database unavailable" });
   }
+  // check_violation
+  if (error.code === "23514") {
+    return response.status(400).json({ error: "phone number format invalid" });
+  }
   // Default: 500 internal server error
   response.status(500).json({ error: "internal server error" });
 };
