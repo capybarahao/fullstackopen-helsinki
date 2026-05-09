@@ -1,0 +1,5 @@
+{
+  "biome.lsp.bin": {
+    "win32-x64": "./part3/p-book-backend/node_modules/@biomejs/cli-win32-x64/biome.exe"
+  }
+}

@@ -10,7 +10,9 @@
     "start": "node index.js",
     "dev": "node --watch index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint ."
+    "lint": "biome check .",
+    "lint:fix": "biome check --apply .",
+    "format": "biome format --write ."
   },
   "dependencies": {
     "cors": "^2.8.6",
@@ -20,9 +22,6 @@
     "pg": "^8.20.0"
   },
   "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "@stylistic/eslint-plugin": "^5.10.0",
-    "eslint": "^10.3.0",
-    "globals": "^17.6.0"
+    "@biomejs/biome": "^2.4.14"
   }
 }
