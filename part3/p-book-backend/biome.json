@@ -1,6 +1,5 @@
 {
-   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
-  
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
 
   "files": {
     "includes": ["**/*.js", "!!**/dist"]
@@ -18,7 +17,7 @@
     "enabled": true,
     "rules": {
       "recommended": true,
-      
+
       "style": {
         "useBlockStatements": "error",
         "useConsistentArrayType": "error",
