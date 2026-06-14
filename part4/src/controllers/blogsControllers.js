@@ -19,4 +19,6 @@ const create = async (request, response, _next) => {
   response.status(201).json(blog)
 }
 
+deleteById
+
 module.exports = { getAll, create }

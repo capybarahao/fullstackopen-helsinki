@@ -134,6 +134,21 @@ describe('POST /api/blogs', () => {
 })
 
 // --------------------------------------------------
+// Tests for DELETE /api/blogs
+// --------------------------------------------------
+
+// --------------------------------------------------
+// verifies that the unique identifier property of the blog posts is named id
+// --------------------------------------------------
+describe('GET /api/blogs', () => {
+  test('the unique identifier property of the blog posts is named id', async () => {
+    const response = await api.get('/api/blogs')
+    const firstBlog = response.body[0]
+    console.log(firstBlog.id)
+    assert.ok(firstBlog.id)
+  })
+})
+// --------------------------------------------------
 // after runs ONCE after all tests finish.
 // We close the database connection pool so Node exits
 // cleanly instead of hanging indefinitely.

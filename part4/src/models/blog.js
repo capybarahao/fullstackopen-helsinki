@@ -13,4 +13,8 @@ const create = async (title, author, url, likes) => {
   return result.rows[0]
 }
 
-module.exports = { getAll, create }
+const deleteById = async (id) => {
+  const result = await pool.query('DELETE FROM blogs WHERE id = $1 RETURNING *', [id])
+  return result.rows[0]
+}
+module.exports = { getAll, create, deleteById }
