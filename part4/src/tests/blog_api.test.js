@@ -65,6 +65,14 @@ describe('GET /api/blogs', () => {
     // response.body is the parsed JSON array from the server
     assert.strictEqual(response.body.length, initialBlogs.length)
   })
+
+  // verifies that the unique identifier property of the blog posts is named id
+  test('the unique identifier property of the blog posts is named id', async () => {
+    const response = await api.get('/api/blogs')
+    const firstBlog = response.body[0]
+    console.log(firstBlog.id)
+    assert.ok(firstBlog.id)
+  })
 })
 
 // --------------------------------------------------
@@ -134,18 +142,43 @@ describe('POST /api/blogs', () => {
 })
 
 // --------------------------------------------------
-// Tests for DELETE /api/blogs
+// Tests for PUT /api/blogs/:id
 // --------------------------------------------------
+describe('PUT /api/blogs/:id', () => {
+  test('updates only likes of a blog', async () => {
+    // 1. Grab an existing blog to get its original values
+    const blogs = await api.get('/api/blogs')
+    const blog = blogs.body[0]
+    // 2. Send only likes — no title, author, or url
+    const response = await api.put(`/api/blogs/${blog.id}`).send({ likes: 99 }).expect(200)
+    // 3. Only likes should have changed
+    assert.strictEqual(response.body.likes, 99)
+    // Everything else stays the same
+    assert.strictEqual(response.body.title, blog.title)
+    assert.strictEqual(response.body.author, blog.author)
+    assert.strictEqual(response.body.url, blog.url)
+  })
+})
 
 // --------------------------------------------------
-// verifies that the unique identifier property of the blog posts is named id
+// Tests for DELETE /api/blogs/:id
 // --------------------------------------------------
-describe('GET /api/blogs', () => {
-  test('the unique identifier property of the blog posts is named id', async () => {
-    const response = await api.get('/api/blogs')
-    const firstBlog = response.body[0]
-    console.log(firstBlog.id)
-    assert.ok(firstBlog.id)
+describe('DELETE /api/blogs/:id', () => {
+  test('deletes a blog successfully', async () => {
+    // 1. Get the first blog's id
+    const blogs = await api.get('/api/blogs')
+    const blog = blogs.body[0]
+    // 2. Delete it — expect 204 No Content
+    await api.delete(`/api/blogs/${blog.id}`).expect(204)
+    // 3. Verify the count dropped by 1
+    const blogsAfter = await api.get('/api/blogs')
+    assert.strictEqual(blogsAfter.body.length, initialBlogs.length - 1)
+    // 4. Verify the deleted blog is really gone
+    const ids = blogsAfter.body.map((b) => b.id)
+    assert.ok(!ids.includes(blog.id))
+  })
+  test('returns 404 when blog does not exist', async () => {
+    await api.delete('/api/blogs/99999').expect(404)
   })
 })
 // --------------------------------------------------
