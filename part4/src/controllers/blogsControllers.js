@@ -1,4 +1,5 @@
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 const getAll = async (_request, response, _next) => {
   const blogs = await Blog.getAll()
@@ -15,7 +16,7 @@ const create = async (request, response, _next) => {
     return response.status(400).json({ error: 'url missing' })
   }
 
-  const blog = await Blog.create(title, author, url, likes)
+  const blog = await Blog.create(title, author, url, likes, request.user.id)
   response.status(201).json(blog)
 }
 
@@ -37,12 +38,18 @@ const update = async (request, response, _next) => {
 }
 
 const deleteById = async (request, response, _next) => {
-  const blog = await Blog.deleteById(request.params.id)
-  if (blog) {
-    response.status(204).end()
-  } else {
-    response.status(404).end()
+  const blog = await Blog.getById(request.params.id)
+
+  if (!blog) {
+    return response.status(404).end()
   }
+  // Only the creator can delete
+  if (blog.user_id !== request.user.id) {
+    return response.status(403).json({ error: 'unauthorized' })
+  }
+
+  await Blog.deleteById(request.params.id)
+  response.status(204).end()
 }
 
 module.exports = { getAll, create, update, deleteById }
