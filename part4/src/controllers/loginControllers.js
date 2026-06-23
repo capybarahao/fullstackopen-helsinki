@@ -34,7 +34,8 @@ const login = async (request, response) => {
   // 5. Sign the token with the server's SECRET
   //    jwt.sign() returns a signed string like:
   //    eyJhbGciOiJIUzI1NiIs...
-  const token = jwt.sign(userForToken, SECRET)
+  // token expires in 60*60 seconds, that is, in one hour
+  const token = jwt.sign(userForToken, process.env.SECRET, { expiresIn: 60 * 60 })
 
   // 6. Return the token and basic user info
   //    The client will store the token and send it as
