@@ -33,31 +33,32 @@ const tokenExtractor = (request, _response, next) => {
 // user in the database, and attaches the user object
 // to request.user.
 //
+// jwt.verify() throws on expired/invalid tokens.
+// Express 5 auto-catches the rejection and forwards
+// it to the global errorHandler (errorHandler.js),
+// which maps error.name to the right status code.
+//
 // This middleware returns:
 //   401 if token is missing
-//   401 if token is invalid (expired, tampered, etc.)
+//   401 if user not found in DB
 // --------------------------------------------------
 const userExtractor = async (request, response, next) => {
   if (!request.token) {
     return response.status(401).json({ error: 'token missing' })
   }
 
-  try {
-    // jwt.verify throws if the token is invalid or expired
-    const decoded = jwt.verify(request.token, SECRET)
+  // jwt.verify throws TokenExpiredError or JsonWebTokenError if invalid.
+  // Since this is an async function, Express 5 catches the rejection
+  // and forwards it to the error handler automatically.
+  const decoded = jwt.verify(request.token, SECRET)
 
-    // decoded looks like: { id: 1, username: 'mluukkai', iat: ... }
-    // We look up the full user so controllers can use request.user.id
-    request.user = await User.findByUsername(decoded.username)
+  request.user = await User.findByUsername(decoded.username)
 
-    if (!request.user) {
-      return response.status(401).json({ error: 'user not found' })
-    }
-
-    next()
-  } catch (error) {
-    return response.status(401).json({ error: 'token invalid' })
+  if (!request.user) {
+    return response.status(401).json({ error: 'user not found' })
   }
+
+  next()
 }
 
 module.exports = { tokenExtractor, userExtractor }

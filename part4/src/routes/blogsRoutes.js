@@ -1,6 +1,6 @@
 const { Router } = require('express')
 const controller = require('../controllers/blogsControllers')
-const { userExtractor } = require('./utils/middleware')
+const { userExtractor } = require('../utils/middleware')
 
 const router = Router()
 

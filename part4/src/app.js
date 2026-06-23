@@ -9,6 +9,7 @@ const usersRoutes = require('./routes/usersRoutes')
 const loginRoutes = require('./routes/loginRoutes')
 
 const { tokenExtractor, userExtractor } = require('./utils/middleware')
+const errorHandler = require('./utils/errorHandler')
 
 const app = express()
 
@@ -19,6 +20,9 @@ app.use(tokenExtractor) // runs on every request, just reads the header, no DB c
 app.use(blogsRoutes) // routes that need auth use userExtractor per-route
 app.use(usersRoutes)
 app.use(loginRoutes)
+
+// error handler must be the LAST middleware
+app.use(errorHandler)
 
 // verify database connection
 pool.query('SELECT NOW()', (err) => {

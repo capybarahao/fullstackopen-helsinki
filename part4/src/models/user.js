@@ -7,7 +7,8 @@ const findByUsername = async (username) => {
 
 const createUser = async (username, name, passwordHash) => {
   const result = await pool.query(
-    'INSERT INTO users (username, name, passwordHash) VALUES ($1, $2, $3) RETURNING *',
+    // exclude hash data at the SQL level
+    'INSERT INTO users (username, name, passwordHash) VALUES ($1, $2, $3) RETURNING id, username, name',
     [username, name, passwordHash]
   )
   return result.rows[0]
