@@ -9,3 +9,32 @@ content-type: application/json
     "author": "Haoooo",
     "url": "www.hh.com"
 }
+
+###
+POST http://localhost:3003/api/users HTTP/1.1
+content-type: application/json
+
+{
+    "username": "mluukkai",
+    "name": "Matti Luukkainen",
+    "password": "salainen"
+}
+
+###
+POST http://localhost:3003/api/login HTTP/1.1
+content-type: application/json
+
+{
+    "username": "mluukkai",
+    "password": "salainen"
+}
+
+###
+POST http://localhost:3003/api/blogs HTTP/1.1
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJtbHV1a2thaSIsImlhdCI6MTc4MjU3MTI2NCwiZXhwIjoxNzgyNTc0ODY0fQ.FUBOZWWIXuiBqF1mT82JajQ1Y0Vg7gwLNALlReDRTP4
+
+{   "title": "He",
+    "author": "Haoooo",
+    "url": "www.hh.com"
+}

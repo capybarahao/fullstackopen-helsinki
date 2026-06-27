@@ -12,6 +12,8 @@
 //   programming bug    → errorHandler returns 500
 // Why? A 400 response isn't an "error" — it's a deliberate, predictable part of your API's contract. Handling it inline keeps the validation logic next to the code that checks it.
 const errorHandler = (error, _request, response, _next) => {
+  console.error(error)
+
   if (error.name === 'TokenExpiredError') {
     return response.status(401).json({ error: 'token expired' })
   }

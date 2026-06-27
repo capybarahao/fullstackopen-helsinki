@@ -22,7 +22,7 @@ const login = async (request, response) => {
 
   // 3. Compare the provided password with the stored hash
   //    bcrypt.compare() hashes the input and compares safely
-  const passwordCorrect = await bcrypt.compare(password, user.passwordhash)
+  const passwordCorrect = await bcrypt.compare(password, user.password_hash)
   if (!passwordCorrect) {
     return response.status(401).json({ error: 'invalid username or password' })
   }
