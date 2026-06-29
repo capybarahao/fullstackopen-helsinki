@@ -7,3 +7,6 @@ Working on it
 ### Part 3
 - used Postgres instead of NoSql
 - used biome instead of ESLint
+### Part 4
+- integration test: supertest, separate test database
+- user auth and login: JSON Web Tokens (JWT)
